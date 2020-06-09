@@ -25,8 +25,9 @@ drf-triad-permissions
     :alt: PyPi version
     :target: http://badge.fury.io/py/drf-triad-permissions
 
-.. image:: https://img.shields.io/pypi/dm/drf-triad-permissions
+.. image:: https://pepy.tech/badge/drf-triad-permissions/month
     :alt: Downloads
+    :target: https://pepy.tech/project/drf-triad-permissions/month
 
 |
 
