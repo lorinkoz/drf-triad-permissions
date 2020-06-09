@@ -1,7 +1,7 @@
 from .matching import match, match_any
 
 
-def TRIAD_superset(triads):
+def triad_superset(triads):
     """
     From a list of triads, remove all triads that are more restrictive than other triads.
     """

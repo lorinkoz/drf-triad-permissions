@@ -26,7 +26,7 @@ def match_any(query, perms, strict=True):
     Only one match is required to 'match any'.
     """
     for perm in perms:
-        if match(query, y, strict):
+        if match(query, perm, strict):
             return True
     return False
 
@@ -37,6 +37,6 @@ def match_all(query, perms, strict=True):
     All matches are required to 'match all'.
     """
     for perm in perms:
-        if not match(query, y, strict):
+        if not match(query, perm, strict):
             return False
     return True
