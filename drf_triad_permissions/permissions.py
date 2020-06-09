@@ -20,15 +20,10 @@ def Triads(
     class TriadPermission(BasePermission):
         def get_parameters(self, request, view, obj):
             # User permissions
-            user_permissions = getattr(
-                request.user, TRIAD_USER_PERMISSIONS_FUNCTION, lambda: []
-            )()
+            user_permissions = getattr(request.user, TRIAD_USER_PERMISSIONS_FUNCTION, lambda: [])()
             # Placeholders
             all_placeholders = {**TRIAD_PLACEHOLDERS, **custom_placeholders}
-            eval_placeholders = {
-                key: function(request, view, None)
-                for key, function in all_placeholders.items()
-            }
+            eval_placeholders = {key: function(request, view, None) for key, function in all_placeholders.items()}
             # Queries
             queries = default
             if view.action in actions:
@@ -44,16 +39,11 @@ def Triads(
         def has_permission(self, request, view):
             queries, user_permissions = self.get_parameters(request, view, None)
             return reduce(
-                lambda t, p: t
-                or match_any(p, user_permissions, not getattr(view, "detail", False)),
-                queries,
-                False,
+                lambda t, p: t or match_any(p, user_permissions, not getattr(view, "detail", False)), queries, False,
             )
 
         def has_object_permission(self, request, view, obj):
             queries, user_permissions = self.get_parameters(request, view, obj)
-            return reduce(
-                lambda t, p: t or match_any(p, user_perms, True), queries, False
-            )
+            return reduce(lambda t, p: t or match_any(p, user_perms, True), queries, False)
 
     return [TriadPermission]

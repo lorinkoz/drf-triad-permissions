@@ -12,10 +12,7 @@ def match(query, perm, strict=True):
         return None
     for query_chunk, perm_chunk in zip(query_chunks, perm_chunks):
         if (
-            (
-                perm_chunk not in TRIAD_COMPILED_WILDCARDS
-                or not TRIAD_COMPILED_WILDCARDS[perm_chunk].match(query_chunk)
-            )
+            (perm_chunk not in TRIAD_COMPILED_WILDCARDS or not TRIAD_COMPILED_WILDCARDS[perm_chunk].match(query_chunk))
             and (strict or query_chunk != TRIAD_SOFT_WILDCARD)
             and query_chunk != perm_chunk
         ):
