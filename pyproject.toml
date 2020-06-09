@@ -17,6 +17,9 @@ coverage = {extras = ["toml"], version = "^5.1"}
 [tool.black]
 line-length = 120
 
+[tool.coverage.run]
+source = ["drf_triad_permissions"]
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
