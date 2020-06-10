@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "drf_triad_permissions",
 ]
 
 MIDDLEWARE = [
@@ -49,7 +50,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "triads_sandbox.urls"
+ROOT_URLCONF = "urls"
 
 TEMPLATES = [
     {
@@ -66,8 +67,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = "triads_sandbox.wsgi.application"
 
 
 # Database

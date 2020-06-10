@@ -44,20 +44,20 @@ class StrictMatchTestCase(SimpleTestCase):
     def test_matching_read(self):
         # This can be done at any level, but will happen most likely at the third
         self.assertTrue(match("resource::object::list", "resource::object::read"))
-        self.assertTrue(match("resource::object::list", "resource::object::<read>"))
+        self.assertTrue(match("resource::object::list", "resource::object::[read]"))
         self.assertTrue(match("resource::object::retrieve", "resource::object::read"))
-        self.assertTrue(match("resource::object::retrieve", "resource::object::<read>"))
+        self.assertTrue(match("resource::object::retrieve", "resource::object::[read]"))
 
     def test_matching_write(self):
         # This can be done at any level, but will happen most likely at the third
         self.assertTrue(match("resource::object::create", "resource::object::write"))
-        self.assertTrue(match("resource::object::create", "resource::object::<write>"))
+        self.assertTrue(match("resource::object::create", "resource::object::[write]"))
         self.assertTrue(match("resource::object::update", "resource::object::write"))
-        self.assertTrue(match("resource::object::update", "resource::object::<write>"))
+        self.assertTrue(match("resource::object::update", "resource::object::[write]"))
         self.assertTrue(match("resource::object::partial-update", "resource::object::write"))
-        self.assertTrue(match("resource::object::partial-update", "resource::object::<write>"))
+        self.assertTrue(match("resource::object::partial-update", "resource::object::[write]"))
         self.assertTrue(match("resource::object::destroy", "resource::object::write"))
-        self.assertTrue(match("resource::object::destroy", "resource::object::<write>"))
+        self.assertTrue(match("resource::object::destroy", "resource::object::[write]"))
 
     def test_matching_custom_wildcard(self):
         # Custom wildcard defined in settings
@@ -123,7 +123,9 @@ class MatchAllTestCase(SimpleTestCase):
 
     def test_match_all(self):
         self.assertTrue(
-            match_all("a::b::c", ["a::b::c", "a::b::*", "a::*::c", "*::b::c", "a::*::*", "*::*::c", "*::b::*", "*::*::*"])
+            match_all(
+                "a::b::c", ["a::b::c", "a::b::*", "a::*::c", "*::b::c", "a::*::*", "*::*::c", "*::b::*", "*::*::*"]
+            )
         )
 
     def test_no_match_all(self):

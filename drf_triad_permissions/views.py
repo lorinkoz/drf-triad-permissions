@@ -1,6 +1,7 @@
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 
-from .settings import TRIAD_DIVIDER, TRIAD_WILDCARDS
+from .settings import TRIAD_DIVIDER, TRIAD_SOFT_WILDCARD, TRIAD_WILDCARDS
 
 
 def triad_permissions_js(request):

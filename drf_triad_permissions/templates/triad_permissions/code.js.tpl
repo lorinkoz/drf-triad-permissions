@@ -1,8 +1,6 @@
 triadPermissions = (function () {
-  const wildcards = {
-    {% for wildcard, regex in TRIAD_WILDCARDS.items %}
-      "{{ wildcard }}": /{{ regex }}/,
-    {% endfor %}
+  const wildcards = {{% for wildcard, regex in TRIAD_WILDCARDS.items %}
+    "{{ wildcard }}": /{{ regex }}/,{% endfor %}
   };
   return {
     match: function (query, perm, strict) {
@@ -11,7 +9,7 @@ triadPermissions = (function () {
       if (strict === undefined) {
         strict = true;
       }
-      if (queryChunks.length != 3 || permChunks.length != 3) {
+      if (queryChunks.length !== 3 || permChunks.length !== 3) {
         return null;
       }
       for (let i = 0; i < queryChunks.length; i++) {

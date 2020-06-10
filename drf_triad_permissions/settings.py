@@ -5,9 +5,9 @@ from django.conf import settings
 DEFAULT_TRIAD_WILDCARDS = {
     "*": r"^.+$",
     "all": r"^.+$",
-    "<read>": r"^list|retrieve$",
+    "[read]": r"^list|retrieve$",
     "read": r"^list|retrieve$",
-    "<write>": r"^create|update|partial-update|destroy$",
+    "[write]": r"^create|update|partial-update|destroy$",
     "write": r"^create|update|partial-update|destroy$",
 }
 
