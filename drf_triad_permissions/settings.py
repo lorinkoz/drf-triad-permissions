@@ -23,12 +23,12 @@ TRIAD_USER_PERMISSIONS_FUNCTION = getattr(settings, "TRIAD_USER_PERMISSIONS_FUNC
 TRIAD_COMPILED_WILDCARDS = {wildcard: re.compile(regex) for wildcard, regex in TRIAD_WILDCARDS.items()}
 
 DEFAULT_TRIAD_PLACEHOLDERS = {
-    "action": lambda view, request, obj=None: view.action.replace("_", "-"),
-    "resource": lambda view, request, obj=None: getattr(
+    "action": lambda request, view, obj=None: view.action.replace("_", "-"),
+    "resource": lambda request, view, obj=None: getattr(
         view, "permissions_resource", getattr(view, "basename", TRIAD_SOFT_WILDCARD)
     ),
-    "id": lambda view, request, obj=None: (f"id:{obj.permissions_id()}" if obj else TRIAD_SOFT_WILDCARD),
-    "owner": lambda view, request, obj=None: (f"owner:{obj.permissions_owner()}" if obj else TRIAD_SOFT_WILDCARD),
+    "id": lambda request, view, obj=None: (f"id:{obj.permissions_id}" if obj else TRIAD_SOFT_WILDCARD),
+    "owner": lambda request, view, obj=None: (f"owner:{obj.permissions_owner}" if obj else TRIAD_SOFT_WILDCARD),
 }
 
 TRIAD_PLACEHOLDERS = {

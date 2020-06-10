@@ -1,4 +1,4 @@
-from .matching import match, match_any
+from .matching import match_any
 
 
 def triad_superset(triads):
