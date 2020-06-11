@@ -1,59 +1,62 @@
+import re
 from functools import reduce
 
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 from .matching import match_any
-from .settings import TRIAD_PLACEHOLDERS, TRIAD_USER_PERMISSIONS_FUNCTION
+from .settings import NON_STRICT_PLACEHOLDER, TRIAD_USER_PERMISSIONS_FUNCTION
 
 
-def Triads(
-    default=[],
-    *,
-    read=None,
-    write=None,
-    list=None,
-    retrieve=None,
-    create=None,
-    update=None,
-    partial_update=None,
-    destroy=None,
-    custom_placeholders={},
-):
+class PlaceholderWrapper:
+    def __init__(self, dicto):
+        self.dicto = dicto
+
+    def __getattr__(self, attr):
+        return self.dicto.get(attr, NON_STRICT_PLACEHOLDER)
+
+
+def get_triad_permission(default=[], *, read=None, write=None, **actions):
     class TriadPermission(BasePermission):
-        def get_parameters(self, request, view, obj):
-            actions = {
-                "list": list,
-                "retrieve": retrieve,
-                "create": create,
-                "update": update,
-                "partial_update": partial_update,
-                "destroy": destroy,
-            }
+        def get_parameters(self, request, view, obj=None):
             # User permissions
             user_permissions = getattr(request.user, TRIAD_USER_PERMISSIONS_FUNCTION, lambda: [])()
             # Placeholders
-            all_placeholders = {**TRIAD_PLACEHOLDERS, **custom_placeholders}
-            eval_placeholders = {key: function(request, view, None) for key, function in all_placeholders.items()}
+            verb = request.method.lower()
+            action = getattr(view, "action", None)
+            placeholders = {
+                "verb": verb or NON_STRICT_PLACEHOLDER,
+                "action": view.action.replace("_", "-") if action else NON_STRICT_PLACEHOLDER,
+                "resource": getattr(view, "permissions_resource", getattr(view, "basename", NON_STRICT_PLACEHOLDER)),
+                "url": PlaceholderWrapper(view.kwargs),
+                "obj": PlaceholderWrapper(obj.__dict__ if obj else {}),
+            }
             # Queries
             queries = default or []
-            if view.action in actions and actions[view.action] is not None:
-                queries = actions[view.action]
+            if verb in actions and actions[verb] is not None:
+                queries = actions[verb]
+            elif action in actions and actions[action] is not None:
+                queries = actions[action]
             elif write is not None and request.method not in SAFE_METHODS:
                 queries = write
             elif read is not None and request.method in SAFE_METHODS:
                 queries = read
-            eval_queries = map(lambda x: x.format(**eval_placeholders), queries)
-            # Parameters
-            return eval_queries, user_permissions
+            evaluated_queries = map(
+                lambda x: re.sub(r"\w+:" + NON_STRICT_PLACEHOLDER, NON_STRICT_PLACEHOLDER, x.format(**placeholders)),
+                queries,
+            )
+            # Response
+            return evaluated_queries, user_permissions
 
         def has_permission(self, request, view):
             queries, user_permissions = self.get_parameters(request, view, None)
             return reduce(
-                lambda t, p: t or match_any(p, user_permissions, not getattr(view, "detail", False)), queries, False,
+                lambda t, p: t or match_any(p, user_permissions, strict=not getattr(view, "detail", False)),
+                queries,
+                False,
             )
 
         def has_object_permission(self, request, view, obj):
             queries, user_permissions = self.get_parameters(request, view, obj)
-            return reduce(lambda t, p: t or match_any(p, user_permissions, True), queries, False)
+            return reduce(lambda t, p: t or match_any(p, user_permissions, strict=True), queries, False)
 
-    return [TriadPermission]
+    return TriadPermission

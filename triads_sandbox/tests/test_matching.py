@@ -43,28 +43,22 @@ class StrictMatchTestCase(SimpleTestCase):
 
     def test_matching_read(self):
         # This can be done at any level, but will happen most likely at the third
+        self.assertTrue(match("resource::object::head", "resource::object::read"))
+        self.assertTrue(match("resource::object::options", "resource::object::read"))
+        self.assertTrue(match("resource::object::get", "resource::object::read"))
         self.assertTrue(match("resource::object::list", "resource::object::read"))
-        self.assertTrue(match("resource::object::list", "resource::object::[read]"))
         self.assertTrue(match("resource::object::retrieve", "resource::object::read"))
-        self.assertTrue(match("resource::object::retrieve", "resource::object::[read]"))
 
     def test_matching_write(self):
         # This can be done at any level, but will happen most likely at the third
+        self.assertTrue(match("resource::object::post", "resource::object::write"))
+        self.assertTrue(match("resource::object::put", "resource::object::write"))
+        self.assertTrue(match("resource::object::patch", "resource::object::write"))
+        self.assertTrue(match("resource::object::delete", "resource::object::write"))
         self.assertTrue(match("resource::object::create", "resource::object::write"))
-        self.assertTrue(match("resource::object::create", "resource::object::[write]"))
         self.assertTrue(match("resource::object::update", "resource::object::write"))
-        self.assertTrue(match("resource::object::update", "resource::object::[write]"))
         self.assertTrue(match("resource::object::partial-update", "resource::object::write"))
-        self.assertTrue(match("resource::object::partial-update", "resource::object::[write]"))
         self.assertTrue(match("resource::object::destroy", "resource::object::write"))
-        self.assertTrue(match("resource::object::destroy", "resource::object::[write]"))
-
-    def test_matching_custom_wildcard(self):
-        # Custom wildcard defined in settings
-        self.assertTrue(match("resource::object::update", "resource::object::any-update"))
-        self.assertTrue(match("resource::object::update", "resource::object::any-update"))
-        self.assertTrue(match("resource::object::partial-update", "resource::object::any-update"))
-        self.assertTrue(match("resource::object::partial-update", "resource::object::any-update"))
 
     def test_no_match_exact(self):
         self.assertFalse(match("resource::object::action1", "resource::object::action2"))

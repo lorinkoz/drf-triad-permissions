@@ -1,4 +1,4 @@
-from .settings import TRIAD_DIVIDER, TRIAD_SOFT_WILDCARD, TRIAD_COMPILED_WILDCARDS
+from .settings import TRIAD_DIVIDER, NON_STRICT_PLACEHOLDER, COMPILED_WILDCARDS
 
 
 def match(query, perm, strict=True):
@@ -12,8 +12,8 @@ def match(query, perm, strict=True):
         return None
     for query_chunk, perm_chunk in zip(query_chunks, perm_chunks):
         if (
-            (perm_chunk not in TRIAD_COMPILED_WILDCARDS or not TRIAD_COMPILED_WILDCARDS[perm_chunk].match(query_chunk))
-            and (strict or query_chunk != TRIAD_SOFT_WILDCARD)
+            (perm_chunk not in COMPILED_WILDCARDS or not COMPILED_WILDCARDS[perm_chunk].match(query_chunk))
+            and (strict or query_chunk != NON_STRICT_PLACEHOLDER)
             and query_chunk != perm_chunk
         ):
             return False
