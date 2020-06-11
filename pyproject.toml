@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "drf-triad-permissions"
-version = "0.1.0"
+version = "0.2.0"
 description = "DRF viewset permissions through triads"
 authors = ["Lorenzo Peña <lorinkoz@gmail.com>"]
 license = "MIT"
