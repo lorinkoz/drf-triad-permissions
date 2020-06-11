@@ -41,7 +41,7 @@ with elegance and reusability in mind. It bases the permission system on string 
 permission statements as well as permission expectations.
 
 Triads
-======
+------
 
 Triads are strings that can be split in three parts, usually ``resource::object::action``. The substring ``::`` acts
 as separator of the parts. Each level can be attached any meaning, but the original intention is to consider that
@@ -53,7 +53,7 @@ For instance, the triad ``polls::all::read`` can be read as "user has access to 
 that the payment is owned by that specific user.
 
 Triads as statements
---------------------
+++++++++++++++++++++
 
 Triads can be used as statements for specifying which permissions a user has. For instance, a user can have this set of
 triads attached to their permissions::
@@ -66,7 +66,7 @@ This means that the user can read all payments, do anything with payments from j
 review all payments from year 2020.
 
 Triads as expectations
-----------------------
+++++++++++++++++++++++
 
 The true power of triads come when they are used to define expectations. Suppose we have a DRF ``ModelViewSet`` that
 controls the payments. In a model viewset, it's expected that users can "list", "create", "update" and "delete" items.
@@ -99,7 +99,7 @@ And let's say that the expectation ``payments::from:john@doe.com::update`` will 
 ``payments::from:john@doe.com::all``.
 
 Triad matching
---------------
+++++++++++++++
 
 Triad matching is done by level, with some simplistic rules.
 
@@ -118,3 +118,91 @@ So, in the example::
     viewset expectation -> payments::from:john@doe.com::update
 
 The first and second level will match by rule 1, and the third level will match by rule 2.
+
+Policies
+--------
+
+Triads can be grouped in policies for easy reutilization. This package comes with a pre-defined basic policy:
+
+.. code-block:: python
+
+    class BasicPolicy(Policy):
+        default = [
+            "{resource}::all::{action}",
+            "{resource}::new::create",
+            "{resource}::id:{obj.id}::{action}",
+        ]
+
+This policy has the following meaning:
+
+* User must have permission to perform the action on all objects.
+* User must have permission to create a new resource (``new`` acts as syntactic sugar here, remember that there is no
+  implicit meaning attached to each level).
+* User must have permission to perform the action on the specific object, matching by id.
+
+Policies can be used as DRF viewset permissions like this:
+
+.. code-block:: python
+
+    class PaymentsViewSet(ModelViewSet):
+        queryset = Payment.objects.all()
+        serializer = PaymentSerializer
+        permission_classes = BasicPolicy.expand()
+
+Policies are the recommended way of using triad permissions. However, if you need to create a permission class on the
+fly, you can use ``drf_triad_permissions.permissions.get_triad_permission``. This function has the same parameters than
+the policy class variables, which will be explained in the next section.
+
+Parameters
+++++++++++
+
+Policies can be created with the following class variables: ``default``, ``read``, ``write``, plus all HTTP verbs in
+lower case (e.g. ``post``, ``get``), plus all viewset actions in lower case (e.g. ``retrieve``, ``partial_update``,
+``review``). Each class variable accepts a list of triads that will be evaluated disjunctively, that is, with OR.
+For instance, a read-only policy can be created with:
+
+.. code-block:: python
+
+    from drf_triad_permissions import Policy
+
+    class ReadOnlyPolicy(Policy):
+        read = [
+            "{resource}::all::{action}",
+            "{resource}::id:{obj.id}::{action}",
+        ]
+        write = []
+
+Notice how the ``write`` parameter needs to be explicitly stated as an empty list.
+
+In the absence of any specific parameter, ``default`` will be always used, which defaults to an empty list.
+
+This example of read-only policy can also be created on the fly by calling:
+
+.. code-block:: python
+
+    from drf_triad_permissions import get_triad_permission
+
+    get_triad_permission(
+        read=[
+            "{resource}::all::{action}",
+            "{resource}::id:{obj.id}::{action}",
+        ],
+        write=[],
+    )
+
+As final example, if you wanted to limit the basic policy to exclude deletions, you would do this:
+
+.. code-block:: python
+
+    from drf_triad_permissions import BasicPolicy
+
+    class BasicPolicyWithNoDeletions(BasicPolicy):
+        destroy = []
+
+Contributing
+------------
+
+* Join the discussion at https://gitter.im/drf-triad-permissions/community.
+* PRs are welcome! If you have questions or comments, please use the link above.
+* To run the test suite run ``make`` or ``make coverage``. The tests for this project live inside a small django
+  project called ``triads_sandbox``.
