@@ -1,9 +1,20 @@
 [tool.poetry]
 name = "drf-triad-permissions"
 version = "0.2.0"
-description = "DRF viewset permissions through triads"
-authors = ["Lorenzo Peña <lorinkoz@gmail.com>"]
+description = "Django Rest Framework viewset permissions through triads"
 license = "MIT"
+authors = ["Lorenzo Peña <lorinkoz@gmail.com>"]
+readme = "README.rst"
+repository = "https://github.com/lorinkoz/drf-triad-permissions"
+keywords = ["django", "djangorestframework", "permissions"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 2.0",
+    "Framework :: Django :: 2.1",
+    "Framework :: Django :: 2.2",
+    "Framework :: Django :: 3.0",
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
