@@ -16,4 +16,8 @@ class Policy:
 
 
 class BasicPolicy(Policy):
-    default = ["{resource}::all::{action}", "{resource}::new::create", "{resource}::id:{obj.id}::{action}"]
+    default = [
+        "{resource}::all::{action}",
+        "{resource}::new::create",
+        "{resource}::id:{obj.id}::{action}",
+    ]
