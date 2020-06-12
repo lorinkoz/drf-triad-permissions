@@ -199,6 +199,39 @@ As final example, if you wanted to limit the basic policy to exclude deletions, 
     class BasicPolicyWithNoDeletions(BasicPolicy):
         destroy = []
 
+Triad matching in javascript
+----------------------------
+
+It might be useful to do triad matching in javascript, in order to compare the current user permissions against a given
+expectation, before diplaying a frontend element or performing a call to action. This package provides a dynamic
+javascript module generator, which can be used as follows.
+
+In your Django URLs, you can use:
+
+.. code-block:: python
+
+    from drf_triad_permissions.views import triad_permissions_js
+
+    urlpatterns += [
+        path("triad_permissions.js", triad_permissions_js, name="triad-permissions-js")
+    ]
+
+You will have to add ``drf_triad_permissions`` to your ``INSTALLED_APPS``.
+
+In your template, you can incorporate the generated file:
+
+.. code-block:: html
+
+    <script type="text/javascript" src="{% url 'triad-permissions-js' %}"></script>
+
+Which provides three functions:
+
+.. code-block:: javascript
+
+    triadPermissions.match(query, perm)
+    triadPermissions.matchAny(query, perms)
+    triadPermissions.matchAll(query, perms)
+
 Contributing
 ------------
 
