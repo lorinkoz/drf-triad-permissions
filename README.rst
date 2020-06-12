@@ -206,3 +206,11 @@ Contributing
 * PRs are welcome! If you have questions or comments, please use the link above.
 * To run the test suite run ``make`` or ``make coverage``. The tests for this project live inside a small django
   project called ``triads_sandbox``.
+
+Credits
+-------
+
+* Robert Singer for `drf-access-policy`_, whose idea of policies were the missing piece in the original implementation
+  of this project.
+
+.. _drf-access-policy: https://github.com/rsinger86/drf-access-policy
