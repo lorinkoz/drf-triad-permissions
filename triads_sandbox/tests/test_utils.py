@@ -5,7 +5,7 @@ from drf_triad_permissions.utils import triad_superset
 
 class TriadSupersetTestCase(SimpleTestCase):
     """
-    Tests `utils.triad_superset`.
+    Tests ``utils.triad_superset``.
     """
 
     def test_triad_superset(self):

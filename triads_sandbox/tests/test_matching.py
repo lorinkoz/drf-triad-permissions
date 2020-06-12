@@ -5,7 +5,7 @@ from drf_triad_permissions.matching import match, match_any, match_all
 
 class StrictMatchTestCase(SimpleTestCase):
     """
-    Tests `matching.match` in strict mode.
+    Tests ``matching.match`` in strict mode.
     """
 
     def test_triad_length(self):
@@ -76,7 +76,7 @@ class StrictMatchTestCase(SimpleTestCase):
 
 class NoStrictMatchTestCase(SimpleTestCase):
     """
-    Tests `matching.match` in NO strict mode.
+    Tests ``matching.match`` in NO strict mode.
     """
 
     def test_matching_some(self):
@@ -94,7 +94,7 @@ class NoStrictMatchTestCase(SimpleTestCase):
 
 class MatchAnyTestCase(SimpleTestCase):
     """
-    Tests `matching.match_any`.
+    Tests ``matching.match_any``.
     """
 
     def test_match_any(self):
@@ -112,7 +112,7 @@ class MatchAnyTestCase(SimpleTestCase):
 
 class MatchAllTestCase(SimpleTestCase):
     """
-    Tests `matching.match_all`.
+    Tests ``matching.match_all``.
     """
 
     def test_match_all(self):
