@@ -2,9 +2,9 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import User, Entity
-from .policies import BasicPolicy, UserBasedPolicy
-from .serializers import UserSerializer, EntitySerializer
+from .models import Entity, User  # noqa
+from .policies import BasicPolicy, UserBasedPolicy  # noqa
+from .serializers import EntitySerializer, UserSerializer  # noqa
 
 
 class UserViewSet(viewsets.ModelViewSet):

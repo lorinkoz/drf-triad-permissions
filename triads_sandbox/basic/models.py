@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.db import models
 
 
 class User(AbstractBaseUser):
@@ -10,9 +10,9 @@ class User(AbstractBaseUser):
 
     def get_permissions(self):
         return [
-            f"user::all::read",  # Read all users
+            "user::all::read",  # Read all users
             f"user::id:{self.id}::all",  # Do anything with self, by ID
-            f"entity::all::read",  # Read all entities
+            "entity::all::read",  # Read all entities
             f"entity::user:{self.username}::all",  # Do anything with entities that belog to self, by username
         ]
 

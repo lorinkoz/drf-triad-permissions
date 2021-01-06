@@ -1,4 +1,4 @@
-from .settings import TRIAD_DIVIDER, NON_STRICT_PLACEHOLDER, COMPILED_WILDCARDS
+from drf_triad_permissions.settings import COMPILED_WILDCARDS, NON_STRICT_PLACEHOLDER, TRIAD_DIVIDER
 
 
 def match(query, perm, strict=True):

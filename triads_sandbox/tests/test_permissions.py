@@ -1,12 +1,35 @@
-from django.test import TestCase, Client
+from django.test import Client, SimpleTestCase, TestCase
 
-from basic.models import User, Entity
+from basic.models import Entity, User
+
+from drf_triad_permissions.permissions import NO_MATCH, clean_no_match
+from drf_triad_permissions.settings import NON_STRICT_PLACEHOLDER, TRIAD_DIVIDER
+
+
+class CleanNoMatchTestCase(SimpleTestCase):
+    def test_prefix(self):
+        self.assertEqual(
+            clean_no_match(f"wawa{TRIAD_DIVIDER})(*@awhyn45z#($*@#*${NO_MATCH}"),
+            f"wawa{TRIAD_DIVIDER}{NON_STRICT_PLACEHOLDER}",
+        )
+
+    def test_suffix(self):
+        self.assertEqual(
+            clean_no_match(f"{NO_MATCH})(*@awhyn45z#($*@#*${TRIAD_DIVIDER}wawa"),
+            f"{NON_STRICT_PLACEHOLDER}{TRIAD_DIVIDER}wawa",
+        )
+
+    def test_both(self):
+        self.assertEqual(
+            clean_no_match(f"wawa{TRIAD_DIVIDER})(*@awhyn45z#($*@#*${NO_MATCH})(*@awhyn45z#($*@#*${TRIAD_DIVIDER}wawa"),
+            f"wawa{TRIAD_DIVIDER}{NON_STRICT_PLACEHOLDER}{TRIAD_DIVIDER}wawa",
+        )
 
 
 class APIProbingTestCase(TestCase):
     """
     Probes all URLs from users with varying permissions.
-    Tests actual response vs. expectation. 
+    Tests actual response vs. expectation.
     """
 
     @classmethod
@@ -14,6 +37,7 @@ class APIProbingTestCase(TestCase):
         cls.first = User.objects.create(username="first")
         cls.second = User.objects.create(username="second")
         cls.entity = Entity.objects.create(slug="ent1", user=cls.first)
+        cls.entity2 = Entity.objects.create(slug="ent2", user=cls.second)
 
     @classmethod
     def tearDownClass(cls):
@@ -162,3 +186,30 @@ class APIProbingTestCase(TestCase):
         self.check(url, None, anonymous_expectations)
         self.check(url, self.first, referred_user_expectations)
         self.check(url, self.second, other_user_expectations)
+
+    def test_entity_poke_disabled_policy(self):
+        url = f"/api/entities-by-user/{self.second.username}/{self.entity2.slug}/poke/"
+        anonymous_expectations = {
+            "get": "denied",
+            "post": "denied",
+            "put": "denied",
+            "patch": "denied",
+            "delete": "denied",
+        }
+        referred_user_expectations = {
+            "get": "method-not-allowed",
+            "post": "denied",  # from policy.deny
+            "put": "method-not-allowed",
+            "patch": "method-not-allowed",
+            "delete": "method-not-allowed",
+        }
+        other_user_expectations = {
+            "get": "method-not-allowed",
+            "post": "denied",
+            "put": "method-not-allowed",
+            "patch": "method-not-allowed",
+            "delete": "method-not-allowed",
+        }
+        self.check(url, None, anonymous_expectations)
+        self.check(url, self.second, referred_user_expectations)
+        self.check(url, self.first, other_user_expectations)

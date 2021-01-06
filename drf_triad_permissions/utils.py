@@ -1,4 +1,4 @@
-from .matching import match_any
+from drf_triad_permissions.matching import match_any
 
 
 def triad_superset(triads):

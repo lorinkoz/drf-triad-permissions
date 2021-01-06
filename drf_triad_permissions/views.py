@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 
-from .settings import NON_STRICT_PLACEHOLDER, TRIAD_DIVIDER, WILDCARDS
+from drf_triad_permissions.settings import NON_STRICT_PLACEHOLDER, TRIAD_DIVIDER, WILDCARDS
 
 
 def triad_permissions_js(request):

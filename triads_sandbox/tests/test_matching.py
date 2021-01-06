@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 
-from drf_triad_permissions.matching import match, match_any, match_all
+from drf_triad_permissions.matching import match, match_all, match_any
 
 
 class StrictMatchTestCase(SimpleTestCase):

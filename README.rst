@@ -87,7 +87,7 @@ viewsets, such as ``list``, ``update``, ``partial-update`` or ``delete``.
 Let's suppose a user with the triad statements we saw before attempts to do a PUT request against the (fake) URL
 https://my.domain.com/api/payments-from/2019/10802/. This URL is handled by ``PaymentsViewSet`` whose expectations are
 defined in the set of triads we just saw. Since this is a PUT request against a detail endpoint, it's going to get
-handled as an "update" action. Let's just assume that the payment 10802 of year 2019 has ``author.email`` equal to 
+handled as an "update" action. Let's just assume that the payment 10802 of year 2019 has ``author.email`` equal to
 john at doe.com. When DRF's permission machinery checks the permissions of the requesting user against the expected
 statements, these are the concrete checks that will be used to test against the user::
 
@@ -127,7 +127,7 @@ Triads can be grouped in policies for easy reutilization. This package comes wit
 .. code-block:: python
 
     class BasicPolicy(Policy):
-        default = [
+        allow = [
             "{resource}::all::{action}",
             "{resource}::new::create",
             "{resource}::id:{obj.id}::{action}",
@@ -156,9 +156,8 @@ the policy class variables, which will be explained in the next section.
 Parameters
 ++++++++++
 
-Policies can be created with the following class variables: ``default``, ``read``, ``write``, plus all HTTP verbs in
-lower case (e.g. ``post``, ``get``), plus all viewset actions in lower case (e.g. ``retrieve``, ``partial_update``,
-``review``). Each class variable accepts a list of triads that will be evaluated disjunctively, that is, with OR.
+Policies can be created with the following class variables: ``allow`` and ``deny``. Each class variable accepts a list
+of triads that will be evaluated disjunctively, that is, with OR.
 For instance, a read-only policy can be created with:
 
 .. code-block:: python
@@ -166,15 +165,13 @@ For instance, a read-only policy can be created with:
     from drf_triad_permissions import Policy
 
     class ReadOnlyPolicy(Policy):
-        read = [
+        allow = [
             "{resource}::all::{action}",
             "{resource}::id:{obj.id}::{action}",
         ]
-        write = []
-
-Notice how the ``write`` parameter needs to be explicitly stated as an empty list.
-
-In the absence of any specific parameter, ``default`` will be always used, which defaults to an empty list.
+        deny = [
+            "{resource}::all::write",
+        ]
 
 This example of read-only policy can also be created on the fly by calling:
 
@@ -183,11 +180,13 @@ This example of read-only policy can also be created on the fly by calling:
     from drf_triad_permissions import get_triad_permission
 
     get_triad_permission(
-        read=[
+        allow=[
             "{resource}::all::{action}",
             "{resource}::id:{obj.id}::{action}",
         ],
-        write=[],
+        deny=[
+            "{resource}::all::write",
+        ],
     )
 
 As final example, if you wanted to limit the basic policy to exclude deletions, you would do this:
@@ -197,7 +196,9 @@ As final example, if you wanted to limit the basic policy to exclude deletions, 
     from drf_triad_permissions import BasicPolicy
 
     class BasicPolicyWithNoDeletions(BasicPolicy):
-        destroy = []
+        deny = [
+            "{resource}::all::destroy",
+        ]
 
 Triad matching in javascript
 ----------------------------

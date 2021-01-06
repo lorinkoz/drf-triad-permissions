@@ -1,5 +1,9 @@
 # Makefile for drf-triad-permissions
 
+.PHONY: lint
+lint:
+	pre-commit run --all-files
+
 .PHONY: test
 test:
 	poetry run triads_sandbox/manage.py test tests

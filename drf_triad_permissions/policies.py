@@ -1,22 +1,17 @@
-from .permissions import get_triad_permission
+from drf_triad_permissions.permissions import get_triad_permission
 
 
 class Policy:
-    @classmethod
-    def actions(cls):
-        return {
-            key: [x.strip() for x in value]
-            for key, value in cls.__dict__.items()
-            if not key.startswith("__") and not callable(value)
-        }
+    allow = None
+    deny = None
 
     @classmethod
-    def expand(cls):
-        return [get_triad_permission(**cls.actions())]
+    def expand(cls, default_resource=None):
+        return [get_triad_permission(allow=cls.allow, deny=cls.deny, default_resource=default_resource)]
 
 
 class BasicPolicy(Policy):
-    default = [
+    allow = [
         "{resource}::all::{action}",
         "{resource}::new::create",
         "{resource}::id:{obj.id}::{action}",
