@@ -9,10 +9,6 @@ drf-triad-permissions
     :alt: Code style: black
     :target: https://github.com/ambv/black
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-    :alt: Join the chat at https://gitter.im/drf-triad-permissions
-    :target: https://gitter.im/drf-triad-permissions/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link
-
 .. image:: https://github.com/lorinkoz/drf-triad-permissions/workflows/code/badge.svg
     :alt: Build status
     :target: https://github.com/lorinkoz/drf-triad-permissions/actions
