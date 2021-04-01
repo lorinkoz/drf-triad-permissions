@@ -27,7 +27,7 @@ drf-triad-permissions
 
 .. image:: https://pepy.tech/badge/drf-triad-permissions/month
     :alt: Downloads
-    :target: https://pepy.tech/project/drf-triad-permissions/month
+    :target: https://pepy.tech/project/drf-triad-permissions/
 
 |
 
