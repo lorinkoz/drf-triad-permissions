@@ -236,7 +236,7 @@ Which provides three functions:
 Contributing
 ------------
 
-* Join the discussion at https://gitter.im/drf-triad-permissions/community.
+* Join the discussion at https://github.com/lorinkoz/drf-triad-permissions/discussions.
 * PRs are welcome! If you have questions or comments, please use the link above.
 * To run the test suite run ``make`` or ``make coverage``. The tests for this project live inside a small django
   project called ``triads_sandbox``.
